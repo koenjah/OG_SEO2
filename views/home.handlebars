@@ -148,7 +148,7 @@
                     let animationStarted = false;
                     if (typeof LoadingAnimation !== 'undefined') {
                         try {
-                            // console.log("Animatie handmatig starten voor:", decodedDomain);
+                            console.log("Animatie handmatig starten voor:", decodedDomain);
                             const loadingAnimation = new LoadingAnimation();
                             const displayDomain = decodedDomain.replace(/^(https?:\/\/)?(www\.)?/i, '');
                             loadingAnimation.init(displayDomain);
@@ -164,10 +164,10 @@
                     // Dispatch het submit event pas NADAT de animatie (potentieel) gestart is
                     if (animationStarted) {
                          setTimeout(() => {
-                            // console.log(`Dispatching submit event voor ${decodedDomain} met visitor ID ${visitorId}`);
-                            // Verstuur het event - dit triggert de listener in loading-animation.js
-                            reportForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                        }, 100); // Korte delay zodat animatie kan beginnen te renderen
+                            console.log(`Formulier programmatisch verzenden voor ${decodedDomain} met visitor ID ${visitorId}`);
+                            // Direct het formulier submitten in plaats van een event te dispatchen
+                            reportForm.submit();
+                        }, 500); // Langere delay voor betere animatie-synchronisatie
                     } else {
                          console.error("Submit tegengehouden omdat animatie niet kon starten.");
                     }
