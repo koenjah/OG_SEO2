@@ -85,23 +85,19 @@
       </div>
     </div>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var rateLimitModal = new bootstrap.Modal(document.getElementById('rateLimitModal'));
-      rateLimitModal.show();
-    });
-  </script>
-{{/if}}
+
 
 <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+{{! Laad EERST de loading-animation.js, dan pas dit script }}
+{{! Zorg dat het pad klopt - het staat in public/js }}
+<script src="/js/loading-animation.js"></script>
+
 <script>
-  // Wacht tot de DOM volledig geladen is (goede gewoonte)
   document.addEventListener('DOMContentLoaded', function() {
-    // Definieer een async functie zodat we await kunnen gebruiken voor FingerprintJS
     const initializeAndCheckDomain = async () => {
       try {
         // 1. Haal Fingerprint ID op en zet het in de hidden input
-        let visitorId = ''; // Houd de ID hier bij
+        let visitorId = '';
         const visitorIdInput = document.getElementById('visitorId');
         if (typeof FingerprintJS !== 'undefined') {
             const fp = await FingerprintJS.load();
@@ -117,9 +113,9 @@
             console.error("FingerprintJS library niet geladen!");
         }
 
-        // 2. Lees de 'domain' parameter uit de *browser* URL (van het iframe)
+        // 2. Lees de 'domain' parameter uit de browser URL
         const urlParams = new URLSearchParams(window.location.search);
-        const domainFromQuery = urlParams.get('domain'); // Gebruik 'domain'
+        const domainFromQuery = urlParams.get('domain');
         // console.log("Domain parameter uit iframe URL:", domainFromQuery);
 
         if (domainFromQuery) {
@@ -127,17 +123,31 @@
             const reportForm = document.querySelector('form[action="/generate-report"]');
 
             if (domainInput && reportForm) {
-                // console.log("Domein gevonden via URL, invullen en submitten...");
                 const decodedDomain = decodeURIComponent(domainFromQuery);
                 domainInput.value = decodedDomain; // Vul de zichtbare input in
 
-                // Zorg dat de visitorId ook echt in het formulier staat voor het submitten
+                // Controleer of visitorId correct is ingesteld
                 if (visitorIdInput && visitorIdInput.value === visitorId) {
-                   // Wacht heel even voor de zekerheid
+
+                    // ----- NIEUW: Start de animatie handmatig -----
+                    if (typeof LoadingAnimation !== 'undefined') {
+                        // console.log("Animatie handmatig starten voor:", decodedDomain);
+                        const loadingAnimation = new LoadingAnimation();
+                        // Gebruik de domeinnaam ZONDER http/www voor de animatie tekst
+                        const displayDomain = decodedDomain.replace(/^(https?:\/\/)?(www\.)?/i, '');
+                        loadingAnimation.init(displayDomain);
+                    } else {
+                        console.error("LoadingAnimation class is niet beschikbaar!");
+                    }
+                    // ----- EINDE NIEUW -----
+
+                    // Wacht heel even NA het starten van de animatie
+                    // (geeft de animatie tijd om te renderen/starten)
                     setTimeout(() => {
                         // console.log(`Formulier wordt nu gesubmit voor ${decodedDomain} met visitor ID ${visitorId}`);
                         reportForm.submit();
-                    }, 150); // Kleine vertraging
+                    }, 300); // Iets langere delay nu de animatie start
+
                 } else {
                     console.error("Visitor ID kon niet correct worden ingesteld vóór submit. Formulier niet automatisch verzonden.");
                 }
@@ -145,13 +155,11 @@
                 console.error("Kon domein input (#domain) of formulier (action='/generate-report') niet vinden.");
             }
         } else {
-            // console.log("Geen 'domain' parameter gevonden in iframe URL, formulier wordt niet automatisch gesubmit.");
-            // Optioneel: check of de server toch iets heeft ingevuld (als fallback voor directe bezoekers)
-            const serverPrefill = '{{prefill.url}}'; // Lees de server-waarde (die nu waarschijnlijk leeg is via iframe)
+            // console.log("Geen 'domain' parameter gevonden, formulier wordt niet automatisch gesubmit.");
+            const serverPrefill = '{{prefill.url}}';
             if (serverPrefill && domainInput) {
                  domainInput.value = serverPrefill;
-                 // console.log("Domein ingevuld via server prefill (waarschijnlijk direct bezoek):", serverPrefill);
-                 // Hier niet automatisch submitten, laat gebruiker klikken.
+                 // console.log("Domein ingevuld via server prefill:", serverPrefill);
             }
         }
       } catch (error) {
@@ -159,7 +167,6 @@
       }
     };
 
-    // Roep de initialisatiefunctie aan
     initializeAndCheckDomain();
   });
 </script>
