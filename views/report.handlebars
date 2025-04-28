@@ -1,0 +1,489 @@
+<div class="row">
+  <div class="col-12">
+    <h1 class="mb-4">SEO rapportage voor {{report.domain}}</h1>
+    <p class="text-muted">Gemaakt op {{formatDate report.timestamp}}</p>
+    
+    <!-- Traffic Trend Section -->
+    <div class="card shadow mb-5 animate-on-hover">
+      <div class="card-header">
+        <h2 class="h4 mb-0 section-title"><i class="bi bi-graph-up"></i> Bezoekers analyse</h2>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="position: relative; height:300px;">
+          <canvas id="trafficChart"></canvas>
+        </div>
+        
+        <div class="row mt-4">
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <h5>Hoogste aantal</h5>
+                <p class="display-6">{{formatNumber report.sections.trafficHistory.highestTraffic}}</p>
+                <p class="text-muted">{{report.sections.trafficHistory.highestMonth}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <h5>Gemiddeld</h5>
+                <p class="display-6">{{formatNumber report.sections.trafficHistory.averageTraffic}}</p>
+                <p class="text-muted">Per maand</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <h5>Laagste aantal</h5>
+                <p class="display-6">{{formatNumber report.sections.trafficHistory.lowestTraffic}}</p>
+                <p class="text-muted">{{report.sections.trafficHistory.lowestMonth}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="alert alert-primary mt-4">
+          <h5>Uitleg:</h5>
+          <div class="mb-0">{{markdown report.sections.insights.trafficTrend}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Top Keywords Section -->
+    <div class="card shadow mb-5 animate-on-hover">
+      <div class="card-header">
+        <h2 class="h4 mb-0 section-title"><i class="bi bi-search"></i> Beste zoekwoorden</h2>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover" id="keywordsTable">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="keyword">Zoekwoord <i class="sort-icon"></i></th>
+                <th class="sortable" data-sort="position">Positie <i class="sort-icon"></i></th>
+                <th class="sortable" data-sort="search_volume">Zoekvolume <i class="sort-icon"></i></th>
+                <th class="sortable" data-sort="estimated_traffic">Traffic <i class="sort-icon"></i></th>
+                <th class="sortable" data-sort="cpc">CPC (€) <i class="sort-icon"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each report.sections.rankedKeywords.keywords}}
+              <tr>
+                <td data-value="{{this.keyword}}">{{this.keyword}}</td>
+                <td data-value="{{this.position}}">{{this.position}}</td>
+                <td data-value="{{this.search_volume}}">{{formatNumber this.search_volume}}</td>
+                <td data-value="{{this.estimated_traffic}}">{{formatNumber this.estimated_traffic}}</td>
+                <td data-value="{{this.cpc}}">{{formatDecimal this.cpc}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="alert alert-primary mt-4">
+          <h5>Uitleg:</h5>
+          <div class="mb-0">{{markdown report.sections.insights.keywords}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Domain Authority Section -->
+    <div class="report-section">
+      <h3 class="section-title"><i class="bi bi-shield-check"></i> Website autoriteit</h3>
+      
+      <div class="authority-groups">
+        <div class="authority-group">
+          <h4 class="group-title"><i class="bi bi-graph-up-arrow"></i> Moz Metrics</h4>
+          <div class="authority-metrics">
+            <div class="authority-metric">
+              <div class="authority-circle">
+                <div class="authority-value">{{report.sections.domainMetrics.mozDomainAuthority}}</div>
+              </div>
+              <div class="authority-label">Domain Authority</div>
+              <div class="authority-description">Moz score voor domein kracht</div>
+            </div>
+            
+            <div class="authority-metric">
+              <div class="authority-circle">
+                <div class="authority-value">{{report.sections.domainMetrics.mozPageAuthority}}</div>
+              </div>
+              <div class="authority-label">Page Authority</div>
+              <div class="authority-description">Moz score voor pagina kracht</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="authority-group">
+          <h4 class="group-title"><i class="bi bi-trophy"></i> Majestic Metrics</h4>
+          <div class="authority-metrics">
+            <div class="authority-metric">
+              <div class="authority-circle">
+                <div class="authority-value">{{report.sections.domainMetrics.majesticTrustFlow}}</div>
+              </div>
+              <div class="authority-label">Trust Flow</div>
+              <div class="authority-description">Majestic kwaliteitsscore</div>
+            </div>
+            
+            <div class="authority-metric">
+              <div class="authority-circle">
+                <div class="authority-value">{{report.sections.domainMetrics.majesticCitationFlow}}</div>
+              </div>
+              <div class="authority-label">Citation Flow</div>
+              <div class="authority-description">Majestic kwantiteitsscore</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="metrics-info">
+        <p>De autoriteitsscores geven aan hoe sterk je website is in de ogen van zoekmachines. Hogere scores leiden tot betere rankings.</p>
+      </div>
+      
+      <div class="alert alert-primary mt-4">
+        <h5>Uitleg:</h5>
+        <div class="mb-0">{{markdown report.sections.insights.domainAuthority}}</div>
+      </div>
+    </div>
+    
+    <!-- Performance Section -->
+    <div class="report-section">
+      <h3 class="section-title"><i class="bi bi-speedometer"></i> Website snelheid</h3>
+      
+      <div class="metrics-container">
+        <div class="metric-item">
+          <div class="metric-circle {{getScoreClass report.sections.lighthouse.mobile.performanceScore}}">
+            <div class="metric-value">{{report.sections.lighthouse.mobile.performanceScore}}</div>
+          </div>
+          <div class="metric-label">Mobiele prestaties</div>
+          <div class="metric-description">Algemene prestaties op mobiel</div>
+        </div>
+        
+        <div class="metric-item">
+          <div class="metric-circle {{getScoreClass report.sections.lighthouse.desktop.performanceScore}}">
+            <div class="metric-value">{{report.sections.lighthouse.desktop.performanceScore}}</div>
+          </div>
+          <div class="metric-label">Desktop prestaties</div>
+          <div class="metric-description">Algemene prestaties op desktop</div>
+        </div>
+        
+        <div class="metric-item">
+          <div class="metric-circle {{getScoreClass report.sections.lighthouse.accessibilityScore}}">
+            <div class="metric-value">{{report.sections.lighthouse.accessibilityScore}}</div>
+          </div>
+          <div class="metric-label">Toegankelijkheid</div>
+          <div class="metric-description">Hoe goed je site werkt voor alle gebruikers</div>
+        </div>
+        
+        <div class="metric-item">
+          <div class="metric-circle {{getScoreClass report.sections.lighthouse.bestPracticesScore}}">
+            <div class="metric-value">{{report.sections.lighthouse.bestPracticesScore}}</div>
+          </div>
+          <div class="metric-label">Best Practices</div>
+          <div class="metric-description">Volgt je site moderne web standaarden</div>
+        </div>
+      </div>
+      
+      <div class="performance-details">
+        <h4 class="details-title">Gedetailleerde laadtijd metrics</h4>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Mobiel</th>
+                <th>Desktop</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Eerste Contentvolle Paint (FCP)</td>
+                <td>{{report.sections.lighthouse.mobile.firstContentfulPaint}}</td>
+                <td>{{report.sections.lighthouse.desktop.firstContentfulPaint}}</td>
+              </tr>
+              <tr>
+                <td>Grootste Contentvolle Paint (LCP)</td>
+                <td>{{report.sections.lighthouse.mobile.largestContentfulPaint}}</td>
+                <td>{{report.sections.lighthouse.desktop.largestContentfulPaint}}</td>
+              </tr>
+              <tr>
+                <td>Speed Index</td>
+                <td>{{report.sections.lighthouse.mobile.speedIndex}}</td>
+                <td>{{report.sections.lighthouse.desktop.speedIndex}}</td>
+              </tr>
+              <tr>
+                <td>Time to Interactive (TTI)</td>
+                <td>{{report.sections.lighthouse.mobile.timeToInteractive}}</td>
+                <td>{{report.sections.lighthouse.desktop.timeToInteractive}}</td>
+              </tr>
+              <tr>
+                <td>Total Blocking Time (TBT)</td>
+                <td>{{report.sections.lighthouse.mobile.totalBlockingTime}}</td>
+                <td>{{report.sections.lighthouse.desktop.totalBlockingTime}}</td>
+              </tr>
+              <tr>
+                <td>Cumulative Layout Shift (CLS)</td>
+                <td>{{report.sections.lighthouse.mobile.cumulativeLayoutShift}}</td>
+                <td>{{report.sections.lighthouse.desktop.cumulativeLayoutShift}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="metrics-info">
+          <p>Deze scores zijn gebaseerd op Google Lighthouse metingen. Hogere scores betekenen betere prestaties.</p>
+        </div>
+        
+        <div class="alert alert-primary mt-4">
+          <h5>Uitleg:</h5>
+          <div class="mb-0">{{markdown report.sections.insights.performance}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Floating Calendly Button -->
+    <a href="https://calendly.com/stefankelderman" target="_blank" class="floating-cta">
+      <i class="bi bi-calendar-check"></i>
+      Gratis persoonlijk advies gesprek
+    </a>
+    
+    <div class="text-center">
+      {{#unless viewOnly}}
+      {{#if shareUrl}}
+      <div class="share-container mt-4 mb-4">
+        <p class="share-text">Deel deze rapportage:</p>
+        <div class="share-url-container">
+          <input type="text" class="share-url" value="{{shareUrl}}" readonly>
+          <button class="copy-btn" onclick="copyShareUrl()">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+      </div>
+      {{/if}}
+      <a href="/" class="new-report-button">
+        <i class="bi bi-plus-circle"></i>
+        Nieuw rapport maken
+      </a>
+      {{/unless}}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Traffic Trend Chart
+    const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+    
+    // Calculate the maximum value for the y-axis (250% of highest traffic value)
+    const trafficData = {{{json report.sections.trafficHistory.organicTraffic}}};
+    const highestTraffic = Math.max(...trafficData);
+    const yAxisMax = Math.ceil(highestTraffic * 2);
+    
+    // Calculate a nice rounded interval for the y-axis ticks
+    const tickCount = 5; // Number of ticks to show
+    let tickInterval = Math.ceil(yAxisMax / tickCount);
+    
+    // Round to a nice number (1, 2, 5, 10, 20, 50, 100, etc.)
+    const magnitude = Math.pow(10, Math.floor(Math.log10(tickInterval)));
+    const normalized = tickInterval / magnitude;
+    
+    let niceTickInterval;
+    if (normalized < 1.5) niceTickInterval = 1;
+    else if (normalized < 3) niceTickInterval = 2;
+    else if (normalized < 7) niceTickInterval = 5;
+    else niceTickInterval = 10;
+    
+    niceTickInterval = niceTickInterval * magnitude;
+    
+    // Adjust the max value to be a multiple of the tick interval
+    const adjustedMax = Math.ceil(yAxisMax / niceTickInterval) * niceTickInterval;
+    
+    const trafficChart = new Chart(trafficCtx, {
+      type: 'line',
+      data: {
+        labels: {{{json report.sections.trafficHistory.months}}},
+        datasets: [{
+          label: 'Bezoekers',
+          data: {{{json report.sections.trafficHistory.organicTraffic}}},
+          backgroundColor: 'rgba(237, 124, 47, 0.2)',
+          borderColor: 'rgba(237, 124, 47, 1)',
+          borderWidth: 2,
+          tension: 0.3,
+          pointRadius: 4,
+          pointBackgroundColor: 'rgba(237, 124, 47, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Bezoekers: ' + Math.round(context.raw).toLocaleString('nl-NL');
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: adjustedMax,
+            ticks: {
+              stepSize: niceTickInterval,
+              callback: function(value) {
+                return value.toLocaleString('nl-NL');
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // Animate circular indicators when they come into view
+    const animateCircularIndicators = () => {
+      const indicators = document.querySelectorAll('.circular-indicator');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const indicator = entry.target;
+            const fill = indicator.querySelector('.fill');
+            
+            // Reset the height to 0 first for animation
+            fill.style.height = '0%';
+            
+            // Trigger reflow
+            void indicator.offsetWidth;
+            
+            // Animate to the actual height
+            setTimeout(() => {
+              fill.style.height = fill.getAttribute('data-height') + '%';
+              
+              // Add pulse animation after fill animation completes
+              setTimeout(() => {
+                indicator.classList.add('animate');
+              }, 1200);
+            }, 100);
+            
+            // Stop observing after animation
+            observer.unobserve(indicator);
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      // Store original height values and set to 0 initially
+      indicators.forEach(indicator => {
+        const fill = indicator.querySelector('.fill');
+        const height = fill.style.height;
+        fill.setAttribute('data-height', parseInt(height));
+        fill.style.height = '0%';
+        
+        // Start observing
+        observer.observe(indicator);
+      });
+    };
+    
+    // Call the animation function
+    animateCircularIndicators();
+    
+    // Table sorting functionality
+    const initTableSorting = () => {
+      const table = document.getElementById('keywordsTable');
+      if (!table) return;
+      
+      const headers = table.querySelectorAll('th.sortable');
+      const tbody = table.querySelector('tbody');
+      let currentSort = { column: null, direction: 'asc' };
+      
+      headers.forEach(header => {
+        header.addEventListener('click', () => {
+          const column = header.getAttribute('data-sort');
+          let direction = 'asc';
+          
+          // Reset all headers
+          headers.forEach(h => h.classList.remove('asc', 'desc', 'active'));
+          
+          // Set direction based on current state
+          if (currentSort.column === column) {
+            direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+          }
+          
+          // Update current sort state
+          currentSort = { column, direction };
+          
+          // Update header appearance
+          header.classList.add(direction, 'active');
+          
+          // Get all rows as an array for sorting
+          const rows = Array.from(tbody.querySelectorAll('tr'));
+          
+          // Sort the rows
+          rows.sort((a, b) => {
+            const aValue = a.querySelector(`td[data-value]:nth-child(${getColumnIndex(column) + 1})`).getAttribute('data-value');
+            const bValue = b.querySelector(`td[data-value]:nth-child(${getColumnIndex(column) + 1})`).getAttribute('data-value');
+            
+            // Determine if values are numeric
+            const aNum = !isNaN(parseFloat(aValue));
+            const bNum = !isNaN(parseFloat(bValue));
+            
+            // Compare based on type
+            let comparison = 0;
+            if (aNum && bNum) {
+              comparison = parseFloat(aValue) - parseFloat(bValue);
+            } else {
+              comparison = aValue.localeCompare(bValue, 'nl', { sensitivity: 'base' });
+            }
+            
+            // Reverse if descending
+            return direction === 'asc' ? comparison : -comparison;
+          });
+          
+          // Re-append rows in the new order
+          rows.forEach(row => tbody.appendChild(row));
+        });
+      });
+      
+      // Helper function to get column index
+      function getColumnIndex(columnName) {
+        let index = 0;
+        headers.forEach((header, i) => {
+          if (header.getAttribute('data-sort') === columnName) {
+            index = i;
+          }
+        });
+        return index;
+      }
+      
+      // Sort by estimated_traffic by default (descending)
+      const estimatedTrafficHeader = Array.from(headers).find(h => h.getAttribute('data-sort') === 'estimated_traffic');
+      if (estimatedTrafficHeader) {
+        estimatedTrafficHeader.click();
+        estimatedTrafficHeader.click();
+      }
+    };
+    
+    // Initialize table sorting
+    initTableSorting();
+  });
+  
+  // Function to copy share URL to clipboard
+  function copyShareUrl() {
+    const shareUrlInput = document.querySelector('.share-url');
+    shareUrlInput.select();
+    document.execCommand('copy');
+    
+    const copyBtn = document.querySelector('.copy-btn');
+    const originalIcon = copyBtn.innerHTML;
+    
+    copyBtn.innerHTML = '<i class="bi bi-check"></i>';
+    setTimeout(() => {
+      copyBtn.innerHTML = originalIcon;
+    }, 2000);
+  }
+</script>

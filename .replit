@@ -1,0 +1,53 @@
+run = "npm run dev"
+
+# The primary language of the repl
+language = "nodejs"
+modules = ["nodejs-20", "web"]
+
+# Environment variables
+[env]
+# Add your environment variables here if needed
+
+# Packager configuration
+[packager]
+# A URL for the 'start' script (if it exists)
+startCommand = "npm start"
+
+# Enable the package manager
+enabledPackageManagers = ["npm"]
+
+[packager.features]
+packageSearch = true
+guessImports = true
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 35413906
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server.js"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "node server.js"]
+build = ["sh", "-c", "npm install"]
+
+[nix]
+channel = "stable-24_05"

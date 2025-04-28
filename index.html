@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Rapportage Tool | OptimaalGroeien</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="theme-color" content="#ed7c2f">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    .iframe-container {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+    }
+    
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      transition: opacity 0.5s ease;
+    }
+    
+    .loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .spinner {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 20px;
+      border: 5px solid rgba(237, 124, 47, 0.2);
+      border-top: 5px solid #ed7c2f;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    .loading-text {
+      color: #053b63;
+      font-size: 18px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="iframe-container">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">SEO Rapportage Tool wordt geladen...</div>
+    </div>
+    <!-- Replace this URL with your actual Replit URL when you have it -->
+    <iframe src="YOUR_REPLIT_URL_HERE" id="app-iframe" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const iframe = document.getElementById('app-iframe');
+      const loading = document.getElementById('loading');
+      
+      // Hide loading screen when iframe is loaded
+      iframe.addEventListener('load', function() {
+        setTimeout(function() {
+          loading.classList.add('hidden');
+        }, 500);
+      });
+      
+      // If iframe takes too long, hide loading anyway
+      setTimeout(function() {
+        loading.classList.add('hidden');
+      }, 8000);
+    });
+  </script>
+</body>
+</html>

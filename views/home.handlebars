@@ -1,0 +1,108 @@
+<div class="app-hero">
+  <div class="hero-content">
+    <h1>SEO rapportage</h1>
+    <p>Snel inzicht in je website prestaties</p>
+  </div>
+</div>
+
+<div class="app-input-container">
+  <form action="/generate-report" method="POST">
+    <input type="hidden" name="visitorId" id="visitorId">
+    <div class="app-input-wrapper">
+      <div class="input-icon">
+        <i class="bi bi-globe"></i>
+      </div>
+      <input 
+        type="text" 
+        class="app-input" 
+        id="domain" 
+        name="domain" 
+        placeholder="Voer je website in..." 
+        required
+        autocomplete="off"
+        value="{{prefill.url}}"
+      >
+      <button type="submit" class="app-submit">
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+    <small class="input-hint">Bijvoorbeeld: jouwwebsite.nl</small>
+  </form>
+</div>
+
+<div class="app-features-grid">
+  <div class="feature-item">
+    <i class="bi bi-graph-up"></i>
+    <span>Bezoekers</span>
+  </div>
+  <div class="feature-item">
+    <i class="bi bi-search"></i>
+    <span>Zoekwoorden</span>
+  </div>
+  <div class="feature-item">
+    <i class="bi bi-shield-check"></i>
+    <span>Autoriteit</span>
+  </div>
+  <div class="feature-item">
+    <i class="bi bi-speedometer"></i>
+    <span>Snelheid</span>
+  </div>
+</div>
+
+{{#if rateLimitMsg}}
+  <!-- Rate limit reached modal -->
+  <div class="modal fade premium-modal" id="rateLimitModal" tabindex="-1" aria-labelledby="rateLimitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content premium-modal-content">
+        <div class="modal-header premium-modal-header">
+          <div class="premium-header-content">
+            <h5 class="modal-title premium-modal-title" id="rateLimitModalLabel">Limiet bereikt</h5>
+            <div class="premium-modal-subtitle">Optimaal Groeien SEO Tool</div>
+          </div>
+          <button type="button" class="btn-close premium-close-button" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+        </div>
+        <div class="modal-body premium-modal-body">
+          <div class="rate-limit-content">
+            <div class="rate-limit-profile">
+              <div class="rate-limit-img-container">
+                <img src="/img/stefan.webp" alt="Stefan Kelderman" class="rate-limit-img img-fluid">
+              </div>
+              <div class="rate-limit-name">
+                <div class="profile-name">Stefan Kelderman</div>
+                <div class="profile-title">Eigenaar Optimaal Groeien</div>
+              </div>
+            </div>
+            <div class="rate-limit-text premium-text">
+              {{#if rateLimitMsg}}
+                {{{rateLimitMsg}}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer premium-modal-footer">
+          <a href="https://calendly.com/optimaalgroeien/kennismaking" target="_blank" class="btn premium-button">Plan een gesprek <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var rateLimitModal = new bootstrap.Modal(document.getElementById('rateLimitModal'));
+      rateLimitModal.show();
+    });
+  </script>
+{{/if}}
+
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+<script>
+  (async () => {
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    document.getElementById('visitorId').value = result.visitorId;
+    const preUrl = '{{prefill.url}}';
+    if (preUrl) {
+      document.getElementById('domain').value = preUrl;
+      document.querySelector('form[action="/generate-report"]').submit();
+    }
+  })();
+</script>

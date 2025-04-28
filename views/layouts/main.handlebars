@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Rapportage Tool</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/fav.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/fav.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/fav.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <meta name="theme-color" content="#ed7c2f">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <a href="/" class="app-logo-link">
+        <img src="/img/og-logo.png" alt="OptimaalGroeien" class="app-logo">
+      </a>
+    </header>
+    
+    <main class="app-content">
+      {{#if isReportPage}}
+      <div class="mobile-notification">
+        <i class="bi bi-phone"></i>
+        <p>Dit rapport is optimaal te bekijken op een groter scherm</p>
+      </div>
+      {{/if}}
+      
+      {{{body}}}
+    </main>
+    
+    <footer class="app-footer">
+      <p>&copy; {{currentYear}} SEO Rapportage Tool</p>
+    </footer>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  {{#unless isReportPage}}
+  <script src="/js/loading-animation.js"></script>
+  {{/unless}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animatie voor metric cirkels
+      const metricCircles = document.querySelectorAll('.metric-circle, .authority-circle');
+      metricCircles.forEach(circle => {
+        setTimeout(() => {
+          circle.classList.add('animate');
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>
