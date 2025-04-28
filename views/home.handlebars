@@ -1,172 +1,263 @@
-<div class="app-hero">
-  <div class="hero-content">
-    <h1>SEO rapportage</h1>
-    <p>Snel inzicht in je website prestaties</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Rapportage Tool</title>
+  {{!-- Bootstrap CSS --}}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  {{!-- Bootstrap Icons --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  {{!-- Font Awesome (voor premium modal?) --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  {{!-- Custom Styles --}}
+  <link rel="stylesheet" href="/css/styles.css">
+  {{!-- Favicons --}}
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/fav.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/fav.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/fav.png">
+  {{!-- Chart.js (wordt waarschijnlijk op report pagina gebruikt) --}}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {{!-- GSAP (wordt mogelijk gebruikt voor animaties?) --}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  {{!-- Theme Color --}}
+  <meta name="theme-color" content="#ed7c2f">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <a href="/" class="app-logo-link">
+        <img src="/img/og-logo.png" alt="OptimaalGroeien" class="app-logo">
+      </a>
+    </header>
 
-<div class="app-input-container">
-  <form action="/generate-report" method="POST">
-    <input type="hidden" name="visitorId" id="visitorId">
-    <div class="app-input-wrapper">
-      <div class="input-icon">
-        <i class="bi bi-globe"></i>
-      </div>
-      <input 
-        type="text" 
-        class="app-input" 
-        id="domain" 
-        name="domain" 
-        placeholder="Voer je website in..." 
-        required
-        autocomplete="off"
-        value="{{prefill.url}}"
-      >
-      <button type="submit" class="app-submit">
-        <i class="bi bi-arrow-right"></i>
-      </button>
-    </div>
-    <small class="input-hint">Bijvoorbeeld: jouwwebsite.nl</small>
-  </form>
-</div>
+    <main class="app-content">
 
-<div class="app-features-grid">
-  <div class="feature-item">
-    <i class="bi bi-graph-up"></i>
-    <span>Bezoekers</span>
-  </div>
-  <div class="feature-item">
-    <i class="bi bi-search"></i>
-    <span>Zoekwoorden</span>
-  </div>
-  <div class="feature-item">
-    <i class="bi bi-shield-check"></i>
-    <span>Autoriteit</span>
-  </div>
-  <div class="feature-item">
-    <i class="bi bi-speedometer"></i>
-    <span>Snelheid</span>
-  </div>
-</div>
-
-{{#if rateLimitMsg}}
-  <!-- Rate limit reached modal -->
-  <div class="modal fade premium-modal" id="rateLimitModal" tabindex="-1" aria-labelledby="rateLimitModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content premium-modal-content">
-        <div class="modal-header premium-modal-header">
-          <div class="premium-header-content">
-            <h5 class="modal-title premium-modal-title" id="rateLimitModalLabel">Limiet bereikt</h5>
-            <div class="premium-modal-subtitle">Optimaal Groeien SEO Tool</div>
-          </div>
-          <button type="button" class="btn-close premium-close-button" data-bs-dismiss="modal" aria-label="Sluiten"></button>
-        </div>
-        <div class="modal-body premium-modal-body">
-          <div class="rate-limit-content">
-            <div class="rate-limit-profile">
-              <div class="rate-limit-img-container">
-                <img src="/img/stefan.webp" alt="Stefan Kelderman" class="rate-limit-img img-fluid">
-              </div>
-              <div class="rate-limit-name">
-                <div class="profile-name">Stefan Kelderman</div>
-                <div class="profile-title">Eigenaar Optimaal Groeien</div>
-              </div>
-            </div>
-            <div class="rate-limit-text premium-text">
-              {{#if rateLimitMsg}}
-                {{{rateLimitMsg}}}
-              {{/if}}
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer premium-modal-footer">
-          <a href="https://calendly.com/optimaalgroeien/kennismaking" target="_blank" class="btn premium-button">Plan een gesprek <i class="fas fa-arrow-right ms-2"></i></a>
+      <div class="app-hero">
+        <div class="hero-content">
+          <h1>SEO rapportage</h1>
+          <p>Snel inzicht in je website prestaties</p>
         </div>
       </div>
-    </div>
-  </div>
 
+      <div class="app-input-container">
+        {{!-- Het formulier dat we programmatisch willen submitten --}}
+        <form action="/generate-report" method="POST" id="report-form"> {{!-- ID toegevoegd voor makkelijkere selectie --}}
+          <input type="hidden" name="visitorId" id="visitorId" value=""> {{!-- Zorg dat deze bestaat --}}
+          <div class="app-input-wrapper">
+            <div class="input-icon">
+              <i class="bi bi-globe"></i>
+            </div>
+            <input
+              type="text"
+              class="app-input"
+              id="domain"
+              name="domain"
+              placeholder="Voer je website in..."
+              required
+              autocomplete="off"
+              value="{{prefill.url}}" {{!-- Houd server-side prefill als fallback voor direct bezoek --}}
+            >
+            <button type="submit" class="app-submit">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+          <small class="input-hint">Bijvoorbeeld: jouwwebsite.nl</small>
+        </form>
+      </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
-{{! Laad EERST de loading-animation.js, dan pas dit script }}
-{{! Zorg dat het pad klopt - het staat in public/js }}
-<script src="/js/loading-animation.js"></script>
+      <div class="app-features-grid">
+        <div class="feature-item">
+          <i class="bi bi-graph-up"></i>
+          <span>Bezoekers</span>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-search"></i>
+          <span>Zoekwoorden</span>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Autoriteit</span>
+        </div>
+        <div class="feature-item">
+          <i class="bi bi-speedometer"></i>
+          <span>Snelheid</span>
+        </div>
+      </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const initializeAndCheckDomain = async () => {
-      try {
-        // 1. Haal Fingerprint ID op en zet het in de hidden input
-        let visitorId = '';
-        const visitorIdInput = document.getElementById('visitorId');
-        if (typeof FingerprintJS !== 'undefined') {
-            const fp = await FingerprintJS.load();
-            const result = await fp.get();
-            visitorId = result.visitorId;
-            if (visitorIdInput) {
-                visitorIdInput.value = visitorId;
-                // console.log("Fingerprint Visitor ID:", visitorId);
+      {{!-- Rate Limit Modal (deze logica blijft ongewijzigd) --}}
+      {{#if rateLimitMsg}}
+        <div class="modal fade premium-modal" id="rateLimitModal" tabindex="-1" aria-labelledby="rateLimitModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content premium-modal-content">
+              <div class="modal-header premium-modal-header">
+                <div class="premium-header-content">
+                  <h5 class="modal-title premium-modal-title" id="rateLimitModalLabel">Limiet bereikt</h5>
+                  <div class="premium-modal-subtitle">Optimaal Groeien SEO Tool</div>
+                </div>
+                <button type="button" class="btn-close premium-close-button" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+              </div>
+              <div class="modal-body premium-modal-body">
+                <div class="rate-limit-content">
+                  <div class="rate-limit-profile">
+                    <div class="rate-limit-img-container">
+                      <img src="/img/stefan.webp" alt="Stefan Kelderman" class="rate-limit-img img-fluid">
+                    </div>
+                    <div class="rate-limit-name">
+                      <div class="profile-name">Stefan Kelderman</div>
+                      <div class="profile-title">Eigenaar Optimaal Groeien</div>
+                    </div>
+                  </div>
+                  <div class="rate-limit-text premium-text">
+                    {{{rateLimitMsg}}}
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer premium-modal-footer">
+                <a href="https://calendly.com/optimaalgroeien/kennismaking" target="_blank" class="btn premium-button">Plan een gesprek <i class="fas fa-arrow-right ms-2"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{!-- Script om de rate limit modal te tonen --}}
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            if (typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined') {
+              var rateLimitModalElement = document.getElementById('rateLimitModal');
+              if (rateLimitModalElement) {
+                var rateLimitModal = new bootstrap.Modal(rateLimitModalElement);
+                rateLimitModal.show();
+              } else {
+                console.error("Rate limit modal element not found.");
+              }
             } else {
-                console.warn("Hidden input #visitorId niet gevonden!");
+               console.error("Bootstrap Modal is niet beschikbaar.");
             }
-        } else {
-            console.error("FingerprintJS library niet geladen!");
+          });
+        </script>
+      {{/if}}
+
+    </main> {{!-- Einde main content --}}
+
+    <footer class="app-footer">
+      <p>© SEO Rapportage Tool</p>
+    </footer>
+  </div> {{!-- Einde app-container --}}
+
+  {{!-- === JAVASCRIPT IMPORTS & LOGICA === --}}
+  {{!-- Bootstrap JS (vereist voor modal) --}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  {{!-- Custom main.js (als die bestaat) --}}
+  <script src="/js/main.js"></script>
+  {{!-- Loading Animation Class --}}
+  <script src="/js/loading-animation.js"></script>
+  {{!-- Script voor metric cirkels (als die op de report pagina staan, anders hier weglaten) --}}
+  <script>
+    /*
+    document.addEventListener('DOMContentLoaded', function() {
+      // Deze animatie hoort waarschijnlijk bij de report.handlebars pagina, niet de home pagina.
+      const metricCircles = document.querySelectorAll('.metric-circle, .authority-circle');
+      metricCircles.forEach(circle => {
+        setTimeout(() => {
+          circle.classList.add('animate');
+        }, 300);
+      });
+    });
+    */
+  </script>
+
+  {{!-- FingerprintJS library --}}
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+
+  {{!-- AANGEPAST SCRIPT: Voor automatisch starten bij ?domain= parameter --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const initializeAndCheckDomain = async () => {
+        try {
+          // 1. Haal Fingerprint ID op en zet het in de hidden input
+          let visitorId = '';
+          const visitorIdInput = document.getElementById('visitorId');
+          if (typeof FingerprintJS !== 'undefined') {
+              const fp = await FingerprintJS.load();
+              const result = await fp.get();
+              visitorId = result.visitorId;
+              if (visitorIdInput) {
+                  visitorIdInput.value = visitorId;
+                  // console.log("Fingerprint Visitor ID:", visitorId);
+              } else {
+                  console.warn("Hidden input #visitorId niet gevonden!");
+              }
+          } else {
+              console.error("FingerprintJS library niet geladen!");
+          }
+
+          // 2. Lees de 'domain' parameter uit de browser URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const domainFromQuery = urlParams.get('domain');
+          // console.log("Domain parameter uit iframe URL:", domainFromQuery);
+
+          if (domainFromQuery) {
+              const domainInput = document.getElementById('domain');
+              // Gebruik het ID dat we aan het formulier hebben toegevoegd
+              const reportForm = document.getElementById('report-form');
+
+              if (domainInput && reportForm) {
+                  const decodedDomain = decodeURIComponent(domainFromQuery);
+                  domainInput.value = decodedDomain; // Vul de zichtbare input in
+
+                  // Controleer of visitorId correct is ingesteld
+                  if (visitorIdInput && visitorIdInput.value === visitorId) {
+
+                      // ----- Start de animatie handmatig -----
+                      let animationStarted = false;
+                      if (typeof LoadingAnimation !== 'undefined') {
+                          try {
+                              // console.log("Animatie handmatig starten voor:", decodedDomain);
+                              const loadingAnimation = new LoadingAnimation();
+                              const displayDomain = decodedDomain.replace(/^(https?:\/\/)?(www\.)?/i, '');
+                              loadingAnimation.init(displayDomain);
+                              animationStarted = true;
+                          } catch(animError) {
+                               console.error("Fout bij starten animatie:", animError);
+                          }
+                      } else {
+                          console.error("LoadingAnimation class is niet beschikbaar! Zorg dat /js/loading-animation.js geladen is VOOR dit script.");
+                      }
+                      // ----- EINDE Animatie Start -----
+
+                      // Dispatch het submit event pas NADAT de animatie (potentieel) gestart is
+                      if (animationStarted) {
+                           setTimeout(() => {
+                              // console.log(`Dispatching submit event voor ${decodedDomain} met visitor ID ${visitorId}`);
+                              // Verstuur het event - dit triggert de listener in loading-animation.js
+                              reportForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                          }, 100); // Korte delay zodat animatie kan beginnen te renderen
+                      } else {
+                           console.error("Submit tegengehouden omdat animatie niet kon starten.");
+                      }
+
+                  } else {
+                      console.error("Visitor ID kon niet correct worden ingesteld vóór submit. Formulier niet automatisch verzonden.");
+                  }
+              } else {
+                  console.error("Kon domein input (#domain) of formulier (#report-form) niet vinden.");
+              }
+          } else {
+              // console.log("Geen 'domain' parameter gevonden, formulier wordt niet automatisch gesubmit.");
+              // Vul eventueel de input als de server toch iets heeft doorgegeven (voor direct bezoek)
+              const serverPrefill = '{{prefill.url}}'; // Check server-side waarde als fallback
+              if (serverPrefill && domainInput) {
+                   domainInput.value = serverPrefill;
+              }
+          }
+        } catch (error) {
+          console.error("Fout tijdens initialisatie script:", error);
         }
+      };
 
-        // 2. Lees de 'domain' parameter uit de browser URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const domainFromQuery = urlParams.get('domain');
-        // console.log("Domain parameter uit iframe URL:", domainFromQuery);
+      initializeAndCheckDomain();
+    });
+  </script>
 
-        if (domainFromQuery) {
-            const domainInput = document.getElementById('domain');
-            const reportForm = document.querySelector('form[action="/generate-report"]');
-
-            if (domainInput && reportForm) {
-                const decodedDomain = decodeURIComponent(domainFromQuery);
-                domainInput.value = decodedDomain; // Vul de zichtbare input in
-
-                // Controleer of visitorId correct is ingesteld
-                if (visitorIdInput && visitorIdInput.value === visitorId) {
-
-                    // ----- NIEUW: Start de animatie handmatig -----
-                    if (typeof LoadingAnimation !== 'undefined') {
-                        // console.log("Animatie handmatig starten voor:", decodedDomain);
-                        const loadingAnimation = new LoadingAnimation();
-                        // Gebruik de domeinnaam ZONDER http/www voor de animatie tekst
-                        const displayDomain = decodedDomain.replace(/^(https?:\/\/)?(www\.)?/i, '');
-                        loadingAnimation.init(displayDomain);
-                    } else {
-                        console.error("LoadingAnimation class is niet beschikbaar!");
-                    }
-                    // ----- EINDE NIEUW -----
-
-                    // Wacht heel even NA het starten van de animatie
-                    // (geeft de animatie tijd om te renderen/starten)
-                    setTimeout(() => {
-                        // console.log(`Formulier wordt nu gesubmit voor ${decodedDomain} met visitor ID ${visitorId}`);
-                        reportForm.submit();
-                    }, 300); // Iets langere delay nu de animatie start
-
-                } else {
-                    console.error("Visitor ID kon niet correct worden ingesteld vóór submit. Formulier niet automatisch verzonden.");
-                }
-            } else {
-                console.error("Kon domein input (#domain) of formulier (action='/generate-report') niet vinden.");
-            }
-        } else {
-            // console.log("Geen 'domain' parameter gevonden, formulier wordt niet automatisch gesubmit.");
-            const serverPrefill = '{{prefill.url}}';
-            if (serverPrefill && domainInput) {
-                 domainInput.value = serverPrefill;
-                 // console.log("Domein ingevuld via server prefill:", serverPrefill);
-            }
-        }
-      } catch (error) {
-        console.error("Fout tijdens initialisatie script:", error);
-      }
-    };
-
-    initializeAndCheckDomain();
-  });
-</script>
+</body>
+</html>
