@@ -140,7 +140,7 @@
     </main> {{!-- Einde main content --}}
 
     <footer class="app-footer">
-      <p>© SEO Rapportage Tool</p>
+      <p> SEO Rapportage Tool</p>
     </footer>
   </div> {{!-- Einde app-container --}}
 
@@ -193,7 +193,7 @@
 
           // 2. Lees de 'domain' parameter uit de browser URL
           const urlParams = new URLSearchParams(window.location.search);
-          const domainFromQuery = urlParams.get('domain');
+          const domainFromQuery = urlParams.get('url') || urlParams.get('domain');
           // console.log("Domain parameter uit iframe URL:", domainFromQuery);
 
           if (domainFromQuery) {
